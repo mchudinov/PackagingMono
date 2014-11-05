@@ -1,0 +1,3 @@
+syntax: glob
+PackagingMono/bin
+PackagingMono/obj
