@@ -1,0 +1,9 @@
+Package:callqualityparser
+Version:{xxx}
+Provides:callqualityparser
+Maintainer:Mikael Chudinov <mikael.chudinov@datametrix.no>
+Architecture:amd64
+Section:net
+Description:Parser for Cisco call detail record files.
+Depends:mono-complete (>=3)
+
