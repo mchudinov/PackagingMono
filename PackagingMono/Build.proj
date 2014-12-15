@@ -3,7 +3,7 @@
 
     <PropertyGroup>
 	    <Configuration>Release</Configuration>
-        <SolutionName>CallQualityParser</SolutionName>
+        <SolutionName>PackagingMono</SolutionName>
 	</PropertyGroup>
 
     <Target Name="Run">
