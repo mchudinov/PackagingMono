@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace PackagingMono
 {
@@ -6,7 +7,8 @@ namespace PackagingMono
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var MyConfigParameter = ConfigurationManager.AppSettings["MyConfigParameter"];
+            Console.WriteLine(MyConfigParameter);
         }
     }
 }
