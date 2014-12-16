@@ -1,10 +1,6 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PackagingMono/Program.cs">
-    <Files>
-      <File FileName="PackagingMono/Program.cs" Line="6" Column="6" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+﻿<Properties GitUserInfo="UsingMD" StartupItem="PackagingMono/PackagingMono.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -1,9 +1,7 @@
-Package:callqualityparser
+Package:packagingmono
 Version:{xxx}
-Provides:callqualityparser
-Maintainer:Mikael Chudinov <mikael.chudinov@datametrix.no>
+Maintainer:Mikael Chudinov <mikael@chudinov.net>
 Architecture:amd64
 Section:net
-Description:Parser for Cisco call detail record files.
+Description:Template for Debian packaged Mono application.
 Depends:mono-complete (>=3)
-

@@ -3,7 +3,7 @@
 
     <PropertyGroup>
 	    <Configuration>Release</Configuration>
-        <SolutionName>CallQualityParser</SolutionName>
+        <SolutionName>PackagingMono</SolutionName>
 	</PropertyGroup>
 
     <Target Name="Run">
@@ -11,6 +11,7 @@
 	 <CallTarget Targets="Restore" />
 	 <CallTarget Targets="Version" />
 	 <CallTarget Targets="Build" />
+     <CallTarget Targets="Pack" />
     </Target>
     
     <Target Name="Clean">
@@ -53,19 +54,10 @@
   
     <Target Name="Build">
 	  <Message Text="Build $(Configuration)" />
-	  <MSBuild Projects="$(SolutionName)/$(SolutionName).csproj" Properties="Configuration=$(Configuration)" ContinueOnError="False"/>
-	  <MSBuild Projects="Test/Test.csproj" Properties="Configuration=$(Configuration)" ContinueOnError="False"/>
-    </Target>
-
-    <UsingTask AssemblyFile="packages/MSBuildTasks.1.4.0.78/tools/MSBuild.Community.Tasks.dll" TaskName="NUnit"/> 
-    <Target Name="Test">
-	  <Message Text="Run tests" />
-	  <NUnit Assemblies="Test/bin/$(Configuration)/Test.dll" ToolPath="c:\lib\nunit\bin\" Condition=" '$(OS)' == 'Windows_NT'" />
-      <NUnit Assemblies="Test/bin/$(Configuration)/Test.dll" ToolPath="/usr/bin/" Condition=" '$(OS)' == 'Unix'" />
+	  <MSBuild Projects="$(SolutionName)/$(SolutionName).csproj" Properties="Configuration=$(Configuration)" ContinueOnError="False"/>   
     </Target>
 	
     <UsingTask AssemblyFile="packages/MSBuild.Extension.Pack.1.5.0/tools/net40/MSBuild.ExtensionPack.dll" TaskName="Assembly"/>
-    <UsingTask AssemblyFile="packages/MSBuild.Extension.Pack.1.5.0/tools/net40/MSBuild.ExtensionPack.dll" TaskName="File"/>
     <UsingTask AssemblyFile="packages/MSBuildTasks.1.4.0.78/tools/MSBuild.Community.Tasks.dll" TaskName="FileUpdate"/>
     <Target Name="Pack" Condition=" '$(OS)' == 'Unix'" >
 		<Message Text="Pack binaries to deb package" />
@@ -73,9 +65,9 @@
 			<BinaryFolder>$(SolutionName)/bin/$(Configuration)</BinaryFolder>
 			<PackageFolder>Package</PackageFolder>
 			<TempFolder>temp</TempFolder>
-		<PackageDebFolder>$(PackageFolder)/deb</PackageDebFolder>
+		    <PackageDebFolder>$(PackageFolder)/deb</PackageDebFolder>
 			<PackageTempFolder>$(PackageFolder)/$(TempFolder)</PackageTempFolder>
-		<MainExecutable>$(BinaryFolder)/$(SolutionName).exe</MainExecutable>
+		    <MainExecutable>$(BinaryFolder)/$(SolutionName).exe</MainExecutable>
 		</PropertyGroup>
 		
 		<RemoveDir Directories="$(PackageTempFolder)" />    
@@ -88,29 +80,29 @@
 		
 		<Exec Command="rsync -r --delete $(PackageDebFolder)/* $(PackageTempFolder)"/>
 	
-		<Assembly TaskAction="GetInfo" NetAssembly="$(MainExecutable)"> 
-			<Output TaskParameter="OutputItems" ItemName="Info"/> 
-		</Assembly>
-		<Message Text="Identity: %(Info.Identity)" /> 
-		<Message Text="FullName: %(Info.FullName)" /> 
-		<Message Text="FileVersion: %(Info.FileVersion)" /> 
-		<Message Text="AssemblyVersion: %(Info.AssemblyVersion)" />
-	
-		<FileUpdate Files="$(PackageTempFolder)/DEBIAN/control"
-					Regex="{xxx}"
-					ReplacementText="%(Info.AssemblyVersion)" />    
-	
-		<Exec Command="dos2unix $(PackageTempFolder)/DEBIAN/control"/>
-		
 		<ItemGroup>
 			<BinaryFiles Include="$(BinaryFolder)/**/*.dll;$(BinaryFolder)/**/*.exe;$(BinaryFolder)/**/*.config"/>
 		</ItemGroup>
 		<Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(PackageTempFolder)/opt/$(SolutionName)"/>
 	
+        <Assembly TaskAction="GetInfo" NetAssembly="$(MainExecutable)"> 
+            <Output TaskParameter="OutputItems" ItemName="Info"/> 
+        </Assembly>
+        <Message Text="Identity: %(Info.Identity)" /> 
+        <Message Text="FullName: %(Info.FullName)" /> 
+        <Message Text="FileVersion: %(Info.FileVersion)" /> 
+        <Message Text="AssemblyVersion: %(Info.AssemblyVersion)" />
+    
+        <FileUpdate Files="$(PackageTempFolder)/DEBIAN/control"
+                    Regex="{xxx}"
+                    ReplacementText="%(Info.AssemblyVersion)" />    
+    
+        <Exec Command="dos2unix $(PackageTempFolder)/DEBIAN/control"/>
+
 		<Exec Command="fakeroot dpkg-deb -v --build $(PackageTempFolder)"/>
 		<Copy 
 			SourceFiles="$(PackageFolder)/$(TempFolder).deb" 
-			DestinationFiles="$(PackageFolder)/$(SolutionName)_%(Info.AssemblyVersion)_amd64.deb"/>
+			DestinationFiles="$(PackageFolder)/$(SolutionName)_%(Info.AssemblyVersion).deb"/>
 		<Delete Files="$(PackageFolder)/$(TempFolder).deb"/>
 	
 		<RemoveDir Directories="$(PackageTempFolder)" />
